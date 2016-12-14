@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-from setuptools import setup, find_packages
+from setuptools import setup
 
 setup(
     name='pythia',
@@ -10,5 +10,8 @@ setup(
     author_email='christimperley@googlemail.com',
     url='https://github.com/ChrisTimperley/Pythia',
     license='mit',
-    packages=find_packages()
+    packages=['pythia'],
+    entry_points = {
+        'console_scripts': [ 'pythia = pythia.pythia:main' ]
+    }
 )
