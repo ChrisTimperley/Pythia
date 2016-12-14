@@ -397,7 +397,7 @@ MAP_PARSER.add_argument('-t', '--tests',\
                         default='tests.pythia.json')
 MAP_PARSER.set_defaults(func=action_map)
 
-if __name__ == "__main__":
+def main():
     args = PARSER.parse_args()
     if 'func' in vars(args):
         args.func(args)
