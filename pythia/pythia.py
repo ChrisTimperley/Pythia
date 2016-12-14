@@ -90,6 +90,12 @@ class TestCase(object):
             #   specified by the user).
             for inpt in self.__inpts:
                 cp_from = os.path.join(inputd, inpt.maps_from())
+
+                # if the file doesn't exist within the inputs directory, don't
+                # try to copy it
+                if not os.path.exists(cp_from):
+                    pass
+
                 cp_to = os.path.join(sandboxd, inpt.maps_to())
                 cp_to_dir = os.path.dirname(cp_to)
                 if not os.path.exists(cp_to_dir):
