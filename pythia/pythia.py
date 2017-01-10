@@ -416,7 +416,7 @@ MAP_PARSER.add_argument('--oracle',\
 MAP_PARSER.add_argument('-t', '--tests',\
                         help='location of test suite manifest file',\
                         default='tests.pythia.json')
-RUN_ID_PARSER.add_argument('--time',\
+MAP_PARSER.add_argument('--time',\
                         help='optional time limit (seconds)',\
                         default=None)
 MAP_PARSER.set_defaults(func=action_map)
