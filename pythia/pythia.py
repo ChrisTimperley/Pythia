@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-from subprocess import Popen, PIPE
+from subprocess import Popen, PIPE, TimeoutExpired
 from pprint import pprint
 import re
 import types
@@ -111,8 +111,8 @@ class TestCase(object):
 
             # execute the command within the sandbox under the given time limit
             try:
-                p = Popen(cmd, shell=True, stdout=PIPE, stderr=PIPE, timeout=tlim)
-                stdout, stderr = p.communicate()
+                p = Popen(cmd, shell=True, stdout=PIPE, stderr=PIPE)
+                stdout, stderr = p.communicate(timeout=tlim)
                 stdout = str(stdout)[2:-1]
                 stderr = str(stderr)[2:-1]
                 retcode = p.returncode
