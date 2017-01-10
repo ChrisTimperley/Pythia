@@ -169,7 +169,7 @@ class Oracle(object):
         assert oracle_fn[-5:] == '.json', "oracle file must end in '.json'"
 
         # compute the expected outcomes for each test
-        outcomes = [case.execute(executable_fn, input_d)\
+        outcomes = [case.execute(executable_fn, input_d, None)\
                     for case in manifest.contents()]
         oracle = Oracle(outcomes)
 
