@@ -311,7 +311,7 @@ def action_map(args):
     num_failed = 0
     for test in manifest.contents():
         expected = oracle.expected(test)
-        actual = test.execute(args.executable, args.inputs)
+        actual = test.execute(args.executable, args.inputs, args.time)
         outcome = actual == expected
         if outcome:
             num_passed += 1
@@ -378,6 +378,9 @@ RUN_PARSER.add_argument('--oracle',\
 RUN_PARSER.add_argument('-t', '--tests',\
                         help='location of test suite manifest file',\
                         default='tests.pythia.json')
+RUN_PARSER.add_argument('--time',\
+                        help='optional time limit (seconds)',\
+                        default=None)
 RUN_PARSER.set_defaults(func=action_run)
 
 # run by id action
