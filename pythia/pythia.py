@@ -379,6 +379,7 @@ RUN_PARSER.add_argument('-t', '--tests',\
                         help='location of test suite manifest file',\
                         default='tests.pythia.json')
 RUN_PARSER.add_argument('--time',\
+                        type=float,\
                         help='optional time limit (seconds)',\
                         default=None)
 RUN_PARSER.set_defaults(func=action_run)
@@ -402,6 +403,7 @@ RUN_ID_PARSER.add_argument('--mapping',\
                         help='location of test mapping file',\
                         default='map.pythia.json')
 RUN_ID_PARSER.add_argument('--time',\
+                        type=float,\
                         help='optional time limit (seconds)',\
                         default=None)
 RUN_ID_PARSER.set_defaults(func=action_run_by_id)
@@ -421,6 +423,7 @@ MAP_PARSER.add_argument('-t', '--tests',\
                         default='tests.pythia.json')
 MAP_PARSER.add_argument('--time',\
                         help='optional time limit (seconds)',\
+                        type=float,\
                         default=None)
 MAP_PARSER.set_defaults(func=action_map)
 
