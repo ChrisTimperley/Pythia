@@ -386,6 +386,9 @@ RUN_ID_PARSER.add_argument('-t', '--tests',\
 RUN_ID_PARSER.add_argument('--mapping',\
                         help='location of test mapping file',\
                         default='map.pythia.json')
+RUN_ID_PARSER.add_argument('--time',\
+                        help='optional time limit (seconds)',\
+                        default=None)
 RUN_ID_PARSER.set_defaults(func=action_run_by_id)
 
 # map action
@@ -401,6 +404,9 @@ MAP_PARSER.add_argument('--oracle',\
 MAP_PARSER.add_argument('-t', '--tests',\
                         help='location of test suite manifest file',\
                         default='tests.pythia.json')
+RUN_ID_PARSER.add_argument('--time',\
+                        help='optional time limit (seconds)',\
+                        default=None)
 MAP_PARSER.set_defaults(func=action_map)
 
 def main():
