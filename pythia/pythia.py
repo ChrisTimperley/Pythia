@@ -13,6 +13,11 @@ import tempfile
 
 INPUT_REGEX = r'(?<=\<\<SANDBOX>>\/)[\w|_|\.|-|\/]+\b'
 
+# A special object used to indicate that a test execution timed out
+class TestTimeout(object):
+    def pretty(self):
+        return "Timed out!"
+
 # Describes the state of the sandbox as a dictionary of file names and their
 # associated SHA1 hashes.
 def sandbox_state(d):
@@ -104,18 +109,23 @@ class TestCase(object):
                     os.makedirs(cp_to_dir)
                 shutil.copy2(cp_from, cp_to)
 
-            # execute the command within the sandbox
-            p = Popen(cmd, shell=True, stdout=PIPE, stderr=PIPE)
-            stdout, stderr = p.communicate()
-            stdout = str(stdout)[2:-1]
-            stderr = str(stderr)[2:-1]
-            retcode = p.returncode
-            state = sandbox_state(sandboxd)
+            # execute the command within the sandbox under the given time limit
+            try:
+                p = Popen(cmd, shell=True, stdout=PIPE, stderr=PIPE, timeout=tlim)
+                stdout, stderr = p.communicate()
+                stdout = str(stdout)[2:-1]
+                stderr = str(stderr)[2:-1]
+                retcode = p.returncode
+                state = sandbox_state(sandboxd)
+                return TestOutcome(stdout, stderr, retcode, state)
+            # if the command timed out, return a special TestTimeout object
+            except TimeoutExpired:
+                return TestTimeout()
 
+        # ensure the sandbox is destroyed after execution
         finally:
             if os.path.exists(sandboxd):
                 shutil.rmtree(sandboxd)
-        return TestOutcome(stdout, stderr, retcode, state)
 
 # Describes the outcome of a test case execution in terms of the standard
 # output, standard error, return code, and state of the sandbox.
