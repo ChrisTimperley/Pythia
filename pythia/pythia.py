@@ -2,6 +2,7 @@
 from subprocess import Popen, PIPE
 from pprint import pprint
 import re
+import types
 import argparse
 import os.path
 import json
@@ -75,7 +76,8 @@ class TestCase(object):
         return self.__num
     def command(self):
         return self.__command
-    def execute(self, executable_fn, inputd):
+    def execute(self, executable_fn, inputd, tlim):
+        assert tlim is None or (isinstance(tlim, NumberTypes) and tlim > 0)
         # generate a sandbox directory for this test execution
         sandboxd = tempfile.mkdtemp()
 
@@ -193,9 +195,9 @@ class Oracle(object):
     def to_json(self):
         return [o.to_json() for o in self.__outcomes]
 
-def run_test(manifest, oracle, executable, inputs, test):
+def run_test(manifest, oracle, executable, inputs, test, tlim):
     expected = oracle.expected(test)
-    outcome = test.execute(executable, inputs)
+    outcome = test.execute(executable, inputs, tlim)
     passed = outcome == expected
 
     print("Expected:")
@@ -228,7 +230,7 @@ def action_run(args):
     oracle = Oracle.load(args.oracle)
     test = manifest.get(args.num)
     print("Running test case %d: %s" % (args.num, test.command()))
-    return run_test(manifest, oracle, args.executable, args.inputs, test) 
+    return run_test(manifest, oracle, args.executable, args.inputs, test, args.time) 
 
 # Runs a test case with a given ID, supplied by the mapping file, against the
 # oracle
@@ -239,7 +241,7 @@ def action_run_by_id(args):
     test_num = mapping.get(args.id)
     test = manifest.get(test_num)
     print("Running test case %s: %s" % (args.id, test.command()))
-    return run_test(manifest, oracle, args.executable, args.inputs, test)
+    return run_test(manifest, oracle, args.executable, args.inputs, args.time)
 
 # Constructs a test manifest for a given problem by converting its MTS output
 def action_build_mts(args):
