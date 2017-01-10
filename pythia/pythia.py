@@ -82,7 +82,7 @@ class TestCase(object):
     def command(self):
         return self.__command
     def execute(self, executable_fn, inputd, tlim):
-        assert tlim is None or (isinstance(tlim, NumberTypes) and tlim > 0)
+        assert tlim is None or (isinstance(tlim, types.NumberTypes) and tlim > 0)
         # generate a sandbox directory for this test execution
         sandboxd = tempfile.mkdtemp()
 
