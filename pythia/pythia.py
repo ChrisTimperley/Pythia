@@ -251,7 +251,7 @@ def action_run_by_id(args):
     test_num = mapping.get(args.id)
     test = manifest.get(test_num)
     print("Running test case %s: %s" % (args.id, test.command()))
-    return run_test(manifest, oracle, args.executable, args.inputs, args.time)
+    return run_test(manifest, oracle, args.executable, args.inputs, test, args.time)
 
 # Constructs a test manifest for a given problem by converting its MTS output
 def action_build_mts(args):
