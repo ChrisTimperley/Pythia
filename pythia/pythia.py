@@ -19,6 +19,19 @@ class TestTimeout(object):
     def pretty(self):
         return "Timed out!"
 
+# This function determines what the time limit should be for a test
+# execution, given the duration of the oracle test execution and a flag
+# indicating whether the execution is being used to generate coverage
+# information.
+def time_limit(duration, coverage_enabled):
+    if coverage_enabled:
+        multi = 10.0
+    elif duration > 1.0:
+        multi = 2.0
+    else:
+        multi = 3.0
+    return duration * multi
+
 # Describes the state of the sandbox as a dictionary of file names and their
 # associated SHA1 hashes.
 def sandbox_state(d):
@@ -212,8 +225,9 @@ class Oracle(object):
     def to_json(self):
         return [o.to_json() for o in self.__outcomes]
 
-def run_test(manifest, oracle, executable, inputs, test, tlim):
+def run_test(manifest, oracle, executable, inputs, test, coverage_enabled):
     expected = oracle.expected(test)
+    tlim = time_limit(expected.duration(), coverage_enabled)
     outcome = test.execute(executable, inputs, tlim)
     passed = outcome == expected
 
@@ -247,7 +261,7 @@ def action_run(args):
     oracle = Oracle.load(args.oracle)
     test = manifest.get(args.num)
     print("Running test case %d: %s" % (args.num, test.command()))
-    return run_test(manifest, oracle, args.executable, args.inputs, test, args.time) 
+    return run_test(manifest, oracle, args.executable, args.inputs, test, args.coverage)
 
 # Runs a test case with a given ID, supplied by the mapping file, against the
 # oracle
@@ -258,7 +272,7 @@ def action_run_by_id(args):
     test_num = mapping.get(args.id)
     test = manifest.get(test_num)
     print("Running test case %s: %s" % (args.id, test.command()))
-    return run_test(manifest, oracle, args.executable, args.inputs, test, args.time)
+    return run_test(manifest, oracle, args.executable, args.inputs, test, args.coverage)
 
 # Constructs a test manifest for a given problem by converting its MTS output
 def action_build_mts(args):
@@ -318,7 +332,8 @@ def action_map(args):
     num_failed = 0
     for test in manifest.contents():
         expected = oracle.expected(test)
-        actual = test.execute(args.executable, args.inputs, args.time)
+        tlim = time_limit(expected.duration(), False)
+        actual = test.execute(args.executable, args.inputs, tlim)
         outcome = actual == expected
         if outcome:
             num_passed += 1
@@ -385,10 +400,10 @@ RUN_PARSER.add_argument('--oracle',\
 RUN_PARSER.add_argument('-t', '--tests',\
                         help='location of test suite manifest file',\
                         default='tests.pythia.json')
-RUN_PARSER.add_argument('--time',\
-                        type=float,\
-                        help='optional time limit (seconds)',\
-                        default=None)
+RUN_PARSER.add_argument('--coverage',\
+                        type=bool,\
+                        help='flag indicating whether coverage is enabled',\
+                        default=Flag)
 RUN_PARSER.set_defaults(func=action_run)
 
 # run by id action
@@ -409,10 +424,10 @@ RUN_ID_PARSER.add_argument('-t', '--tests',\
 RUN_ID_PARSER.add_argument('--mapping',\
                         help='location of test mapping file',\
                         default='map.pythia.json')
-RUN_ID_PARSER.add_argument('--time',\
-                        type=float,\
-                        help='optional time limit (seconds)',\
-                        default=None)
+RUN_ID_PARSER.add_argument('--coverage',\
+                        type=bool,\
+                        help='flag indicating whether coverage is enabled',\
+                        default=False)
 RUN_ID_PARSER.set_defaults(func=action_run_by_id)
 
 # map action
@@ -428,10 +443,6 @@ MAP_PARSER.add_argument('--oracle',\
 MAP_PARSER.add_argument('-t', '--tests',\
                         help='location of test suite manifest file',\
                         default='tests.pythia.json')
-MAP_PARSER.add_argument('--time',\
-                        help='optional time limit (seconds)',\
-                        type=float,\
-                        default=None)
 MAP_PARSER.set_defaults(func=action_map)
 
 def main():
