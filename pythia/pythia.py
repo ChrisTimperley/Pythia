@@ -24,12 +24,12 @@ class TestTimeout(object):
 # indicating whether the execution is being used to generate coverage
 # information.
 def time_limit(duration, coverage_enabled):
-    if coverage_enabled:
+    if coverage_enabled or duration < 1.0:
         multi = 10.0
-    elif duration > 1.0:
-        multi = 2.0
-    else:
+    elif duration > 10.0:
         multi = 3.0
+    else:
+        multi = 5.0
     return duration * multi
 
 # Describes the state of the sandbox as a dictionary of file names and their
