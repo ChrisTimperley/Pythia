@@ -403,7 +403,7 @@ RUN_PARSER.add_argument('-t', '--tests',\
 RUN_PARSER.add_argument('--coverage',\
                         type=bool,\
                         help='flag indicating whether coverage is enabled',\
-                        default=Flag)
+                        default=False)
 RUN_PARSER.set_defaults(func=action_run)
 
 # run by id action
