@@ -402,6 +402,7 @@ RUN_PARSER.add_argument('-t', '--tests',\
                         default='tests.pythia.json')
 RUN_PARSER.add_argument('--coverage',\
                         type=bool,\
+                        action='store_true',\
                         help='flag indicating whether coverage is enabled',\
                         default=False)
 RUN_PARSER.set_defaults(func=action_run)
@@ -426,6 +427,7 @@ RUN_ID_PARSER.add_argument('--mapping',\
                         default='map.pythia.json')
 RUN_ID_PARSER.add_argument('--coverage',\
                         type=bool,\
+                        action='store_true',\
                         help='flag indicating whether coverage is enabled',\
                         default=False)
 RUN_ID_PARSER.set_defaults(func=action_run_by_id)
