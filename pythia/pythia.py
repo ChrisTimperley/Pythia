@@ -401,7 +401,6 @@ RUN_PARSER.add_argument('-t', '--tests',\
                         help='location of test suite manifest file',\
                         default='tests.pythia.json')
 RUN_PARSER.add_argument('--coverage',\
-                        type=bool,\
                         action='store_true',\
                         help='flag indicating whether coverage is enabled',\
                         default=False)
@@ -426,7 +425,6 @@ RUN_ID_PARSER.add_argument('--mapping',\
                         help='location of test mapping file',\
                         default='map.pythia.json')
 RUN_ID_PARSER.add_argument('--coverage',\
-                        type=bool,\
                         action='store_true',\
                         help='flag indicating whether coverage is enabled',\
                         default=False)
