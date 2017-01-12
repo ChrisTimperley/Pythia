@@ -1,4 +1,5 @@
 #!/usr/bin/python3
+from timeit import default_timer as timer
 from subprocess import Popen, PIPE, TimeoutExpired
 from pprint import pprint
 import re
@@ -112,12 +113,14 @@ class TestCase(object):
             # execute the command within the sandbox under the given time limit
             try:
                 p = Popen(cmd, shell=True, stdout=PIPE, stderr=PIPE)
+                t_start = timer()
                 stdout, stderr = p.communicate(timeout=tlim)
+                t_end = timer()
                 stdout = str(stdout)[2:-1]
                 stderr = str(stderr)[2:-1]
                 retcode = p.returncode
                 state = sandbox_state(sandboxd)
-                return TestOutcome(stdout, stderr, retcode, state)
+                return TestOutcome(stdout, stderr, retcode, state, duration, (t_end - t_start))
             # if the command timed out, return a special TestTimeout object
             except TimeoutExpired:
                 return TestTimeout()
@@ -132,12 +135,13 @@ class TestCase(object):
 class TestOutcome(object):
     @staticmethod
     def from_json(jsn):
-        return TestOutcome(jsn['out'], jsn['err'], jsn['retcode'], jsn['sandbox'])
-    def __init__(self, stdout, stderr, retcode, sandbox):
+        return TestOutcome(jsn['out'], jsn['err'], jsn['retcode'], jsn['sandbox'], float(jsn['duration']))
+    def __init__(self, stdout, stderr, retcode, sandbox, duration):
         self.__stdout = stdout
         self.__stderr = stderr
         self.__retcode = retcode
         self.__sandbox = sandbox
+        self.__duration = float(duration)
     def stdout(self):
         return self.__stdout
     def stderr(self):
@@ -146,6 +150,8 @@ class TestOutcome(object):
         return self.__retcode
     def sandbox(self):
         return self.__sandbox
+    def duration(self):
+        return self.__duration
     def __eq__(self, other):
         return not (other is None) and\
             self.__stdout == other.stdout() and\
@@ -157,6 +163,7 @@ class TestOutcome(object):
     def to_json(self):
         return {'out': self.__stdout,\
                 'err': self.__stderr,\
+                'duration': self.__duration,\
                 'retcode': self.__retcode,\
                 'sandbox': self.__sandbox}
 
