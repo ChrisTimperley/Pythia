@@ -120,7 +120,7 @@ class TestCase(object):
                 stderr = str(stderr)[2:-1]
                 retcode = p.returncode
                 state = sandbox_state(sandboxd)
-                return TestOutcome(stdout, stderr, retcode, state, duration, (t_end - t_start))
+                return TestOutcome(stdout, stderr, retcode, state, (t_end - t_start))
             # if the command timed out, return a special TestTimeout object
             except TimeoutExpired:
                 return TestTimeout()
