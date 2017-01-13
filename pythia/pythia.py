@@ -165,7 +165,7 @@ class TestOutcome(object):
     def duration(self):
         return self.__duration
     def __eq__(self, other):
-        return not (other is None) and
+        return not (other is None) and \
             not isinstance(other, TestTimeout) and \
             self.__stdout == other.stdout() and \
             self.__stderr == other.stderr() and \
