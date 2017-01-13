@@ -165,10 +165,11 @@ class TestOutcome(object):
     def duration(self):
         return self.__duration
     def __eq__(self, other):
-        return not (other is None) and\
-            self.__stdout == other.stdout() and\
-            self.__stderr == other.stderr() and\
-            self.__retcode == other.retcode() and\
+        return not (other is None) and
+            not isinstance(other, TestTimeout) and \
+            self.__stdout == other.stdout() and \
+            self.__stderr == other.stderr() and \
+            self.__retcode == other.retcode() and \
             self.__sandbox == other.sandbox()
     def pretty(self):
         pprint(self.to_json())
