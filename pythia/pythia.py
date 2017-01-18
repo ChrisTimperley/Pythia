@@ -25,11 +25,11 @@ class TestTimeout(object):
 # information.
 def time_limit(duration, coverage_enabled):
     if coverage_enabled or duration < 1.0:
-        return max(10.0 * duration, 3.0)
+        return max(10.0 * duration, 2.0)
     elif duration > 10.0:
-        multi = 5.0
+        multi = 2.0
     else:
-        multi = 10.0
+        multi = 5.0
 
 # Describes the state of the sandbox as a dictionary of file names and their
 # associated SHA1 hashes.
