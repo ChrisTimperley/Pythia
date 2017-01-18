@@ -123,19 +123,25 @@ class TestCase(object):
                 shutil.copy2(cp_from, cp_to)
 
             # execute the command within the sandbox under the given time limit
-            try:
-                p = Popen(cmd, shell=True, stdout=PIPE, stderr=PIPE)
-                t_start = timer()
-                stdout, stderr = p.communicate(timeout=tlim)
-                t_end = timer()
-                stdout = str(stdout)[2:-1]
-                stderr = str(stderr)[2:-1]
-                retcode = p.returncode
-                state = sandbox_state(sandboxd)
-                return TestOutcome(stdout, stderr, retcode, state, (t_end - t_start))
-            # if the command timed out, return a special TestTimeout object
-            except TimeoutExpired:
-                return TestTimeout()
+            #
+            # Credit to J.F. Sebastian on StackOverflow for advice on enforcing timeouts
+            # and killing process groups when shell=True is used.
+            #
+            # http://stackoverflow.com/questions/36952245/subprocess-timeout-failure
+            with Popen(cmd, shell=True, stdout=PIPE, stderr=PIPE, preexec_fn=os.setsid) as p:
+                try:
+                    t_start = timer()
+                    stdout, stderr = p.communicate(timeout=tlim)
+                    t_end = timer()
+                    stdout = str(stdout)[2:-1]
+                    stderr = str(stderr)[2:-1]
+                    retcode = p.returncode
+                    state = sandbox_state(sandboxd)
+                    return TestOutcome(stdout, stderr, retcode, state, (t_end - t_start))
+                # if the command timed out, return a special TestTimeout object
+                except TimeoutExpired:
+                    os.killpg(p.pid, signal.SIGINT)
+                    return TestTimeout()
 
         # ensure the sandbox is destroyed after execution
         finally:
