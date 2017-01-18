@@ -2,6 +2,7 @@
 from timeit import default_timer as timer
 from subprocess import Popen, PIPE, TimeoutExpired
 from pprint import pprint
+import signal
 import re
 import types
 import argparse
@@ -140,7 +141,7 @@ class TestCase(object):
                     return TestOutcome(stdout, stderr, retcode, state, (t_end - t_start))
                 # if the command timed out, return a special TestTimeout object
                 except TimeoutExpired:
-                    os.killpg(p.pid, signal.SIGINT)
+                    os.killpg(p.pid, signal.SIGKILL)
                     return TestTimeout()
 
         # ensure the sandbox is destroyed after execution
