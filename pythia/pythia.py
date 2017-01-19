@@ -129,7 +129,7 @@ class TestCase(object):
             # and killing process groups when shell=True is used.
             #
             # http://stackoverflow.com/questions/36952245/subprocess-timeout-failure
-            with Popen(cmd, shell=True, stdout=PIPE, stderr=PIPE, preexec_fn=os.setsid) as p:
+            with Popen(cmd, shell=True, stdout=PIPE, stderr=PIPE, preexec_fn=os.setsid, cwd=sandboxd) as p:
                 try:
                     t_start = timer()
                     stdout, stderr = p.communicate(timeout=tlim)
