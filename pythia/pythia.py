@@ -100,6 +100,9 @@ class TestCase(object):
         # generate a sandbox directory for this test execution
         sandboxd = tempfile.mkdtemp()
 
+        # calculate the absolute path for the executable
+        executable_fn = os.path.abspath(executable_fn)
+
         # execute the test case within the sandbox, then ensure it's destroyed
         try:
             cmd = self.__command.replace("<<EXECUTABLE>>", executable_fn)
