@@ -12,7 +12,9 @@ import shutil
 import subprocess
 import sys
 import tempfile
+import resource
 
+MEM_LIMIT = 500 * (1000000) # 500 MB
 INPUT_REGEX = r'(?<=\<\<SANDBOX>>\/)[\w|_|\.|-|\/]+\b'
 
 # A special object used to indicate that a test execution timed out
@@ -81,6 +83,10 @@ class TestInput(object):
     def maps_from(self):
         return self.__maps_from
 
+def preexecute():
+    os.setsid()
+    resource.setrlimit(resource.RLIMIT_AS, MEM_LIMIT)
+
 class TestCase(object):
     @staticmethod
     def from_json(num, jsn):
@@ -132,7 +138,7 @@ class TestCase(object):
             # and killing process groups when shell=True is used.
             #
             # http://stackoverflow.com/questions/36952245/subprocess-timeout-failure
-            with Popen(cmd, shell=True, stdout=PIPE, stderr=PIPE, preexec_fn=os.setsid, cwd=sandboxd) as p:
+            with Popen(cmd, shell=True, stdout=PIPE, stderr=PIPE, preexec_fn=preexecute, cwd=sandboxd) as p:
                 try:
                     t_start = timer()
                     stdout, stderr = p.communicate(timeout=tlim)
