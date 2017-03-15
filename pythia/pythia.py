@@ -14,10 +14,8 @@ import sys
 import tempfile
 import resource
 
-MEM_LIMIT = 500 * (1000000) # 500 MB
+MEM_LIMIT = 1000 * (1000000) # 1 GB
 INPUT_REGEX = r'(?<=\<\<SANDBOX>>\/)[\w|_|\.|-|\/]+\b'
-
-resource.setrlimit(resource.RLIMIT_AS, (MEM_LIMIT, MEM_LIMIT))
 
 # A special object used to indicate that a test execution timed out
 class TestTimeout(object):
@@ -87,6 +85,7 @@ class TestInput(object):
 
 def preexecute():
     os.setsid()
+    resource.setrlimit(resource.RLIMIT_AS, (MEM_LIMIT, MEM_LIMIT))
 
 class TestCase(object):
     @staticmethod
