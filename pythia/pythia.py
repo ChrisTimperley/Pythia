@@ -17,7 +17,7 @@ import resource
 MEM_LIMIT = 500 * (1000000) # 500 MB
 INPUT_REGEX = r'(?<=\<\<SANDBOX>>\/)[\w|_|\.|-|\/]+\b'
 
-resource.setrlimit(resource.RLIMIT_AS, MEM_LIMIT)
+resource.setrlimit(resource.RLIMIT_AS, (MEM_LIMIT, MEM_LIMIT))
 
 # A special object used to indicate that a test execution timed out
 class TestTimeout(object):
