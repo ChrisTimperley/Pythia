@@ -241,17 +241,18 @@ class Oracle(object):
     def to_json(self):
         return [o.to_json() for o in self.__outcomes]
 
-def run_test(manifest, oracle, executable, inputs, test, coverage_enabled):
+def run_test(manifest, oracle, executable, inputs, test, coverage_enabled, verbose):
     expected = oracle.expected(test)
     tlim = time_limit(expected.duration(), coverage_enabled)
     outcome = test.execute(executable, inputs, tlim)
     passed = outcome == expected
 
-    print("Expected:")
-    expected.pretty()
-    print("\nActual:")
-    outcome.pretty()
-    print("")
+    if verbose:
+        print("Expected:")
+        expected.pretty()
+        print("\nActual:")
+        outcome.pretty()
+        print("")
 
     if passed:
         print("Finished running test case: PASSED")
@@ -277,7 +278,7 @@ def action_run(args):
     oracle = Oracle.load(args.oracle)
     test = manifest.get(args.num)
     print("Running test case %d: %s" % (args.num, test.command()))
-    return run_test(manifest, oracle, args.executable, args.inputs, test, args.coverage)
+    return run_test(manifest, oracle, args.executable, args.inputs, test, args.coverage, args.verbose)
 
 # Runs a test case with a given ID, supplied by the mapping file, against the
 # oracle
@@ -288,7 +289,7 @@ def action_run_by_id(args):
     test_num = mapping.get(args.id)
     test = manifest.get(test_num)
     print("Running test case %s: %s" % (args.id, test.command()))
-    return run_test(manifest, oracle, args.executable, args.inputs, test, args.coverage)
+    return run_test(manifest, oracle, args.executable, args.inputs, test, args.coverage, args.verbose)
 
 # Constructs a test manifest for a given problem by converting its MTS output
 def action_build_mts(args):
@@ -420,6 +421,10 @@ RUN_PARSER.add_argument('--coverage',\
                         action='store_true',\
                         help='flag indicating whether coverage is enabled',\
                         default=False)
+RUN_PARSER.add_argument('--verbose',\
+                        action='store_true',\
+                        help='flag to control verbosity',\
+                        default=False)
 RUN_PARSER.set_defaults(func=action_run)
 
 # run by id action
@@ -443,6 +448,10 @@ RUN_ID_PARSER.add_argument('--mapping',\
 RUN_ID_PARSER.add_argument('--coverage',\
                         action='store_true',\
                         help='flag indicating whether coverage is enabled',\
+                        default=False)
+RUN_ID_PARSER.add_argument('--verbose',\
+                        action='store_true',\
+                        help='flag to control verbosity',\
                         default=False)
 RUN_ID_PARSER.set_defaults(func=action_run_by_id)
 
