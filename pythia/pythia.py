@@ -265,7 +265,6 @@ def run_test(manifest, oracle, executable, inputs, test, coverage_enabled, verbo
 # specified oracle directory
 def action_generate(args):
     assert os.path.isfile(args.executable), "specified executable must exist"
-    assert os.path.isdir(args.inputs), "specified input directory must exist"
 
     manifest = TestManifest(args.tests)
     print("Generating oracle...")
