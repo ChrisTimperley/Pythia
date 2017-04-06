@@ -2,6 +2,8 @@
 from timeit import default_timer as timer
 from subprocess import Popen, PIPE, TimeoutExpired
 from pprint import pprint
+
+import os
 import signal
 import re
 import types
@@ -14,6 +16,9 @@ import sys
 import tempfile
 import resource
 
+CONSTANT_NOISE = 0.5
+PLATFORM_SCALE = float(os.environ.get("PYTHIA_PLATFORM_SCALE", 1.0))
+SCALING_FACTOR = 2.0
 MEM_LIMIT = 1000 * (1000000) # 1 GB
 INPUT_REGEX = r'(?<=\<\<SANDBOX>>\/)[\w|_|\.|-|\/]+\b'
 
@@ -27,12 +32,8 @@ class TestTimeout(object):
 # indicating whether the execution is being used to generate coverage
 # information.
 def time_limit(duration, coverage_enabled):
-    if coverage_enabled or duration < 1.0:
-        return max(10.0 * duration, 2.0)
-    elif duration > 10.0:
-        multi = 2.0
-    else:
-        multi = 5.0
+    scale = (10 * SCALING_FACTOR) if coverage_enabled else SCALING_FACTOR
+    return PLATFORM_SCALE * ((scale * duration) + CONSTANT_NOISE)
 
 # Describes the state of the sandbox as a dictionary of file names and their
 # associated SHA1 hashes.
