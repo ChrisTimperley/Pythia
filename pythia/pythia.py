@@ -16,9 +16,10 @@ import sys
 import tempfile
 import resource
 
-CONSTANT_NOISE = 0.5
+CONSTANT_NOISE = float(os.environ.get("PYTHIA_CONSTANT_NOISE", 0.5))
 PLATFORM_SCALE = float(os.environ.get("PYTHIA_PLATFORM_SCALE", 1.0))
-SCALING_FACTOR = 2.0
+SCALING_FACTOR = float(os.environ.get("PYTHIA_LINEAR_NOISE", 2.0))
+
 MEM_LIMIT = 1000 * (1000000) # 1 GB
 INPUT_REGEX = r'(?<=\<\<SANDBOX>>\/)[\w|_|\.|-|\/]+\b'
 
