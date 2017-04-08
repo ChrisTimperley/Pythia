@@ -216,7 +216,7 @@ class Oracle(object):
         # oracle).
         try:
             with open(oracle_fn, 'w') as f:
-                json.dump(oracle.to_json(), f)
+                json.dump(oracle.to_json(), f, indent=2, sort_keys=True)
         except:
             if os.path.exists(oracle_fn):
                 os.remove(oracle_fn)
@@ -264,14 +264,18 @@ def run_test(manifest, oracle, executable, inputs, test, coverage_enabled, verbo
         exit(1)
 
 # Generates the oracle for a given problem, storing its knowledge to disk at a
-# specified oracle directory
-def action_generate(args):
-    assert os.path.isfile(args.executable), "specified executable must exist"
-
-    manifest = TestManifest(args.tests)
+# specified oracle directory.
+def generate(executable, tests="tests.pythia.json", inputs="inputs.pythia.json", output="oracle.pythia.json"):
+    assert os.path.isfile(executable), "specified executable must exist"
+    manifest = TestManifest(tests)
     print("Generating oracle...")
-    Oracle.generate(manifest, args.executable, args.inputs, args.output)
-    print("Finished.\nSaved to disk at: %s" % args.output)
+    Oracle.generate(manifest, executable, inputs, output)
+    print("Finished.\nSaved to disk at: %s" % output)
+
+# Generates the oracle for a given problem, storing its knowledge to disk at a
+# specified oracle directory. Uses arguments provided by the command line.
+def action_generate(args):
+    return generate(args.executable, args.tests, args.inputs, args.output)
 
 # Runs a test case with a given number against the oracle
 def action_run(args):
