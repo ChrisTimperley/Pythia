@@ -114,7 +114,7 @@ class TestCase(object):
         # execute the test case within the sandbox, then ensure it's destroyed
         try:
             cmd = self.__command.replace("<<EXECUTABLE>>", executable_fn)
-            cmd = cmd.replace("<<SANDBOX>>", "./")
+            cmd = cmd.replace("<<SANDBOX>>", ".")
 
             # prepare the inputs
             # TODO: for now the inputs are copied into the sandbox; in the
