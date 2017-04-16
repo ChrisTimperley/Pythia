@@ -374,7 +374,7 @@ def action_map(args):
     print("Found %d failing tests: %s" % (num_failed, ', '.join(failed)))
     print("Saving map file to disk at: map.pythia.json")
     with open('map.pythia.json', 'w') as f:
-        json.dump(m, f)
+        json.dump(m, f, indent=2, sort_keys=True)
     print("Saved map file to: map.pythia.json")
 
 # CLI setup
