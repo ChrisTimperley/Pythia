@@ -360,7 +360,7 @@ def action_map(args):
     for (i, test) in enumerate(manifest.contents()):
         expected = oracle.expected(test)
         tlim = time_limit(expected.duration(), False)
-        print("Running test case: {} [{}/{}]".format(test.command, i, num_tests))
+        print("Running test case: {} [{}/{}]".format(test.command(), i, num_tests))
         actual = test.execute(args.executable, args.inputs, tlim)
         outcome = actual == expected
         if outcome:
