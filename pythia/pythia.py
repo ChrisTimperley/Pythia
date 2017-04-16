@@ -356,9 +356,11 @@ def action_map(args):
     failed = []
     num_passed = 0
     num_failed = 0
-    for test in manifest.contents():
+    num_tests = len(manifest.contents())
+    for (i, test) in enumerate(manifest.contents()):
         expected = oracle.expected(test)
         tlim = time_limit(expected.duration(), False)
+        print("Running test case: {} [{}/{}]".format(test.command, i, num_tests))
         actual = test.execute(args.executable, args.inputs, tlim)
         outcome = actual == expected
         if outcome:
