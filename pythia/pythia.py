@@ -269,7 +269,7 @@ def run_test(manifest, oracle, executable, inputs, test, coverage_enabled, verbo
 
 # Generates the oracle for a given problem, storing its knowledge to disk at a
 # specified oracle directory.
-def generate(executable, tests="tests.pythia.json", inputs="inputs.pythia.json", output="oracle.pythia.json"):
+def generate(executable, tests="tests.pythia.json", inputs="inputs", output="oracle.pythia.json"):
     assert os.path.isfile(executable), "specified executable must exist"
     manifest = TestManifest(tests)
     print("Generating oracle...")
