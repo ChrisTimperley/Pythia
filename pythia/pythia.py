@@ -105,7 +105,7 @@ class TestCase(object):
         return self.__command
     def to_json(self):
         inpts_json = {i.maps_to(): i.maps_from() for i in self.__inpts}
-        return {'command': command, 'input': inpts_json} 
+        return {'command': self.__command, 'input': inpts_json} 
 
     def execute(self, executable_fn, inputd, tlim):
         assert tlim is None or tlim > 0
